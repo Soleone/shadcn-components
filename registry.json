@@ -130,6 +130,36 @@
           "target": "components/soleone/flip-card/spring-easing.ts"
         }
       ]
+    },
+    {
+      "name": "letter",
+      "type": "registry:component",
+      "title": "Letter",
+      "description": "A letter that folds into a paper plane, gets stamped and flies off when sent, or unfolds again if delivery fails. Content agnostic: the page is a render function over the draft.",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "@soleone/material"
+      ],
+      "files": [
+        {
+          "path": "registry/soleone/letter/index.ts",
+          "type": "registry:component",
+          "target": "components/soleone/letter/index.ts"
+        },
+        {
+          "path": "registry/soleone/letter/letter.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/letter/letter.tsx"
+        },
+        {
+          "path": "registry/soleone/letter/letter.css",
+          "type": "registry:file",
+          "target": "components/soleone/letter/letter.css"
+        }
+      ]
     }
   ]
 }
