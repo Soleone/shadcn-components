@@ -1,0 +1,32 @@
+{
+  "name": "shadcn-components",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack -p 3001",
+    "build": "pnpm registry:build && next build",
+    "start": "next start -p 3001",
+    "registry:build": "shadcn build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.41.0",
+    "motion": "13.4.0",
+    "next": "16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.1.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "shadcn": "4.21.4",
+    "tailwindcss": "^4.1.18",
+    "tw-animate-css": "^1.3.4",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "soleone",
+  "homepage": "https://github.com/Soleone/shadcn-components",
+  "items": [
+    {
+      "name": "material",
+      "type": "registry:component",
+      "title": "Material",
+      "description": "Grain texture and a pointer-driven glare and rim light for tilting cards.",
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/material/sheen.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/sheen.tsx"
+        }
+      ]
+    }
+  ]
+}
