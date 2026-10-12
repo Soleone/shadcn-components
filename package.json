@@ -8,7 +8,8 @@
     "build": "pnpm registry:build && next build",
     "start": "next start -p 3001",
     "registry:build": "shadcn build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "registry:check": "shadcn build && git diff --exit-code -- public/r"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
