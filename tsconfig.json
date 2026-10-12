@@ -23,6 +23,9 @@
       }
     ],
     "paths": {
+      "@/components/soleone/*": [
+        "./registry/soleone/*"
+      ],
       "@/*": [
         "./*"
       ]

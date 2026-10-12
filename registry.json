@@ -7,16 +7,39 @@
       "name": "material",
       "type": "registry:component",
       "title": "Material",
-      "description": "Grain texture and a pointer-driven glare and rim light for tilting cards.",
-      "dependencies": [
-        "motion"
-      ],
+      "description": "Grain texture, a pointer-driven glare and rim light for tilting cards, and the shadow and type tokens the other items share.",
+      "dependencies": ["motion"],
       "files": [
-        {
-          "path": "registry/material/sheen.tsx",
-          "type": "registry:component",
-          "target": "components/soleone/sheen.tsx"
-        }
+        { "path": "registry/soleone/material/sheen.tsx", "type": "registry:component", "target": "components/soleone/material/sheen.tsx" },
+        { "path": "registry/soleone/material/material.css", "type": "registry:file", "target": "components/soleone/material/material.css" }
+      ]
+    },
+    {
+      "name": "theme",
+      "type": "registry:component",
+      "title": "Theme",
+      "description": "Omarchy palette themes mapped onto shadcn tokens: parser, built-in palettes, a pre-paint head script, provider with a D hotkey, and a circular reveal.",
+      "files": [
+        { "path": "registry/soleone/theme/index.ts", "type": "registry:component", "target": "components/soleone/theme/index.ts" },
+        { "path": "registry/soleone/theme/palette.ts", "type": "registry:lib", "target": "components/soleone/theme/palette.ts" },
+        { "path": "registry/soleone/theme/palettes.ts", "type": "registry:lib", "target": "components/soleone/theme/palettes.ts" },
+        { "path": "registry/soleone/theme/head.ts", "type": "registry:lib", "target": "components/soleone/theme/head.ts" },
+        { "path": "registry/soleone/theme/provider.tsx", "type": "registry:component", "target": "components/soleone/theme/provider.tsx" },
+        { "path": "registry/soleone/theme/reveal.ts", "type": "registry:lib", "target": "components/soleone/theme/reveal.ts" },
+        { "path": "registry/soleone/theme/theme.css", "type": "registry:file", "target": "components/soleone/theme/theme.css" }
+      ]
+    },
+    {
+      "name": "theme-picker",
+      "type": "registry:component",
+      "title": "Theme picker",
+      "description": "A palette button that opens a 3D ring of cards, each drawn in its own theme. Drag, fling, type to filter; T opens it from anywhere.",
+      "dependencies": ["motion", "@base-ui/react", "lucide-react"],
+      "registryDependencies": ["button", "kbd", "@soleone/theme", "@soleone/material"],
+      "files": [
+        { "path": "registry/soleone/theme-picker/index.ts", "type": "registry:component", "target": "components/soleone/theme-picker/index.ts" },
+        { "path": "registry/soleone/theme-picker/picker.tsx", "type": "registry:component", "target": "components/soleone/theme-picker/picker.tsx" },
+        { "path": "registry/soleone/theme-picker/preview-card.tsx", "type": "registry:component", "target": "components/soleone/theme-picker/preview-card.tsx" }
       ]
     }
   ]
