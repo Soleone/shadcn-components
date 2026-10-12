@@ -296,20 +296,18 @@ export function FlipCard({
         // Cards off screen are skipped entirely (no layout, paint or 3D layers). That clips to the box, so the
         // padding gives the shadow and tilt room, with a matching negative margin to keep the grid layout.
         // Only the card itself takes pointer events, or the padding would cover its neighbors.
-        className="pointer-events-none relative -m-28 p-28 [contain-intrinsic-height:auto_440px] [content-visibility:auto]"
+        // With reduced motion the card skips the flight and just appears; that is CSS, not a branch on
+        // useReducedMotion, which the server cannot know, so the style the server renders always hydrates.
+        className="pointer-events-none relative -m-28 p-28 [contain-intrinsic-height:auto_440px] [content-visibility:auto] motion-reduce:transform-none! motion-reduce:transition-none!"
         style={
           {
             "--tint": tint,
             ...(tintEnd ? { "--tint-end": tintEnd } : {}),
-            ...(reduced
-              ? {}
-              : {
-                  opacity: dealt ? 1 : 0,
-                  transform: dealt ? "none" : `translateY(140px) rotate(${dealAngle(index)}deg) scale(0.86)`,
-                  transition: dealt
-                    ? `transform ${deal.duration}ms ${deal.easing} ${dealDelay}ms, opacity 300ms cubic-bezier(0.22, 1, 0.36, 1) ${dealDelay}ms`
-                    : "none",
-                }),
+            opacity: dealt ? 1 : 0,
+            transform: dealt ? "none" : `translateY(140px) rotate(${dealAngle(index)}deg) scale(0.86)`,
+            transition: dealt
+              ? `transform ${deal.duration}ms ${deal.easing} ${dealDelay}ms, opacity 300ms cubic-bezier(0.22, 1, 0.36, 1) ${dealDelay}ms`
+              : "none",
           } as CSSProperties
         }
       >
