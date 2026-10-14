@@ -64,6 +64,11 @@
           "path": "registry/soleone/theme/theme.css",
           "type": "registry:file",
           "target": "components/soleone/theme/theme.css"
+        },
+        {
+          "path": "registry/soleone/theme/oligarchy.LICENSE",
+          "type": "registry:file",
+          "target": "components/soleone/theme/oligarchy.LICENSE"
         }
       ]
     },
