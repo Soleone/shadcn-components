@@ -38,8 +38,14 @@ const EDGE_STEP = 1.2 // px between slices, so the slab is about 6px thick
  * With `selectable`, its Select button rises on hover (only where there is hover). `pressed` sinks it;
  * the owner sets it, since a press may come from a touch or a key, which CSS :active misses.
  */
+/** The card's sample line: plain text, then a phrase drawn as selected text. */
+export type ThemeTagline = { text: string; highlight: string }
+
+const DEFAULT_TAGLINE: ThemeTagline = { text: "Small tools and games,", highlight: "built with care" }
+
 export function ThemePreviewCard({
   theme,
+  tagline = DEFAULT_TAGLINE,
   depth = 0,
   className,
   style,
@@ -48,6 +54,7 @@ export function ThemePreviewCard({
   children,
 }: {
   theme: ThemeOption
+  tagline?: ThemeTagline
   depth?: number
   selectable?: boolean
   pressed?: boolean
@@ -106,9 +113,9 @@ export function ThemePreviewCard({
         <div className="text-center" style={lift(6)}>
           <div className="truncate text-lg leading-tight font-semibold tracking-tight">{theme.label}</div>
           <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-            Small tools and games, {/* Selected text, the way the theme highlights it. */}
+            {tagline.text} {/* Selected text, the way the theme highlights it. */}
             <span className="rounded-xs bg-(--selection) px-0.5 whitespace-nowrap text-(--selection-foreground)">
-              built with care
+              {tagline.highlight}
             </span>
             .
           </p>

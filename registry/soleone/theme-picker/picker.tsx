@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button"
 import { Kbd } from "@/components/ui/kbd"
 import { cn } from "@/lib/utils"
 import { isInteractiveTarget, revealTheme, useTheme, type ThemeOption } from "@/components/soleone/theme"
-import { ThemePreviewCard } from "./preview-card"
+import { ThemePreviewCard, type ThemeTagline } from "./preview-card"
 import { Sheen } from "@/components/soleone/material/sheen"
 
 // The ring. Cards stand on a cylinder seen from outside: the front card faces the viewer and its
@@ -87,7 +87,8 @@ const stretch = (value: number, count: number) => {
   return edge + (value - edge) * RUBBER
 }
 
-export function ThemePicker() {
+/** `tagline` is the sample line every card shows; it defaults to the portfolio's. */
+export function ThemePicker({ tagline }: { tagline?: ThemeTagline } = {}) {
   const { theme, themes: all, setTheme } = useTheme()
   // A hidden theme joins the ring only while it is the one in use.
   const themes = all.filter((candidate) => !candidate.hidden || candidate.name === theme)
@@ -473,6 +474,8 @@ export function ThemePicker() {
                     tilt={index === front && !dragging && !reduced}
                     aimRef={frontAim}
                     pressed={index === front && (keyPressed || held)}
+                    taglineText={tagline?.text}
+                    taglineHighlight={tagline?.highlight}
                   />
                 ))}
             </div>
@@ -509,6 +512,8 @@ const RingCard = memo(function RingCard({
   tilt,
   aimRef,
   pressed,
+  taglineText,
+  taglineHighlight,
 }: {
   theme: ThemeOption
   index: number
@@ -518,6 +523,9 @@ const RingCard = memo(function RingCard({
   tilt: boolean
   aimRef: RefObject<FrontAim | null> // where the front card takes a touch tilt from the ring's gestures
   pressed: boolean
+  // Strings rather than an object, so a tagline passed inline does not defeat the memo.
+  taglineText?: string
+  taglineHighlight?: string
 }) {
   // A filtered ring keeps the full ring's spacing, so a few matches sit side by side, not spread round.
   const slots = Math.max(count, RING_SLOTS)
@@ -631,7 +639,14 @@ const RingCard = memo(function RingCard({
         className="relative size-full transform-3d"
         style={{ rotateX, rotateY }}
       >
-        <ThemePreviewCard theme={theme} depth={1} selectable={isFront} pressed={pressed} className="size-full">
+        <ThemePreviewCard
+          theme={theme}
+          tagline={taglineText && taglineHighlight ? { text: taglineText, highlight: taglineHighlight } : undefined}
+          depth={1}
+          selectable={isFront}
+          pressed={pressed}
+          className="size-full"
+        >
           <motion.div aria-hidden className="absolute inset-0 rounded-3xl bg-black" style={{ opacity: shade }} />
           <Sheen
             glareX={glareX}
