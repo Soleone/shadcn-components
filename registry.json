@@ -73,6 +73,27 @@
       ]
     },
     {
+      "name": "theme-vite",
+      "type": "registry:component",
+      "title": "Theme for Vite",
+      "description": "A Vite plugin that inlines the theme tokens and pre-paint script into index.html and serves the theme list as virtual:theme-options.",
+      "registryDependencies": [
+        "@soleone/theme"
+      ],
+      "files": [
+        {
+          "path": "registry/soleone/theme-vite/index.ts",
+          "type": "registry:lib",
+          "target": "components/soleone/theme-vite/index.ts"
+        },
+        {
+          "path": "registry/soleone/theme-vite/virtual.d.ts",
+          "type": "registry:file",
+          "target": "components/soleone/theme-vite/virtual.d.ts"
+        }
+      ]
+    },
+    {
       "name": "theme-picker",
       "type": "registry:component",
       "title": "Theme picker",

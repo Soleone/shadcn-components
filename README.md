@@ -39,6 +39,7 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 |---|---|---|
 | `material` | grain, glare and rim light (`Sheen`), shadow and type tokens | |
 | `theme` | omarchy palettes on shadcn tokens: parser, built-in palettes, `createThemeHead`, `ThemeProvider` (D flips dark/light), `revealTheme` | |
+| `theme-vite` | `themePlugin`: inlines the theme head into `index.html` for Vite apps and serves `virtual:theme-options` | `theme` |
 | `theme-picker` | `ThemePicker`: a 3D ring of cards, each drawn in its own theme | `theme`, `material`, `button`, `kbd` |
 | `flip-card` | `FlipCard`: deals in, tilts, catches the light, flips; any `front` and `back` | `material` |
 | `letter` | `Letter`: a form that folds into a paper plane and flies off when sent | `material` |
