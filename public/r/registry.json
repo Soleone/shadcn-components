@@ -28,7 +28,7 @@
       "name": "theme",
       "type": "registry:component",
       "title": "Theme",
-      "description": "Omarchy palette themes mapped onto shadcn tokens: parser, built-in palettes, a pre-paint head script, provider with a D hotkey, and a circular reveal.",
+      "description": "Omarchy palette themes mapped onto shadcn tokens: parser, built-in palettes, a pre-paint head script, a provider, and a circular reveal.",
       "files": [
         {
           "path": "registry/soleone/theme/index.ts",
