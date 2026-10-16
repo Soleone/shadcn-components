@@ -4,6 +4,31 @@
   "homepage": "https://github.com/Soleone/shadcn-components",
   "items": [
     {
+      "name": "agent",
+      "type": "registry:component",
+      "title": "Agent panel",
+      "description": "A controlled agent conversation with streaming-friendly scrolling, Markdown, tool traces, and custom tool results. The host owns transport, tools, and approvals.",
+      "dependencies": ["lucide-react", "react-markdown"],
+      "registryDependencies": ["message-scroller", "message", "bubble", "input-group", "trace", "alert", "empty", "sidebar"],
+      "files": [
+        {
+          "path": "registry/soleone/agent/index.ts",
+          "type": "registry:component",
+          "target": "components/soleone/agent/index.ts"
+        },
+        {
+          "path": "registry/soleone/agent/agent-panel.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/agent/agent-panel.tsx"
+        },
+        {
+          "path": "registry/soleone/agent/agent-sidebar.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/agent/agent-sidebar.tsx"
+        }
+      ]
+    },
+    {
       "name": "material",
       "type": "registry:component",
       "title": "Material",

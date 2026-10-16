@@ -37,12 +37,40 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 
 | item | what | depends on |
 |---|---|---|
+| `agent` | collapsible right agent dock, controlled conversation, Markdown, tool traces, custom results; no runtime or app knowledge | shadcn sidebar and chat primitives |
 | `material` | grain, glare and rim light (`Sheen`), shadow and type tokens | |
 | `theme` | omarchy palettes on shadcn tokens: parser, built-in palettes, `createThemeHead`, `ThemeProvider` (D flips dark/light), `revealTheme` | |
 | `theme-vite` | `themePlugin`: inlines the theme head into `index.html` for Vite apps and serves `virtual:theme-options` | `theme` |
 | `theme-picker` | `ThemePicker`: a 3D ring of cards, each drawn in its own theme | `theme`, `material`, `button`, `kbd` |
 | `flip-card` | `FlipCard`: deals in, tilts, catches the light, flips; any `front` and `back` | `material` |
 | `letter` | `Letter`: a form that folds into a paper plane and flies off when sent | `material` |
+
+## Agent panel
+
+```sh
+pnpm dlx shadcn@latest add @soleone/agent
+```
+
+`AgentSidebar` wraps your app: `<AgentSidebar agent={<YourAgent />} title="Agent">{app}</AgentSidebar>`.
+It docks on the right, minimizes to one button, and uses the stock Sidebar's mobile sheet. The host
+owns agent state outside the dock so work and unsent prompt text can survive minimization.
+
+`AgentPanel` fills a bounded flex parent with its own transcript scroll and a pinned composer.
+It takes `messages: AgentMessage[]`, controlled `prompt` and `onPromptChange` (a React state setter),
+`busy`, `onSend(text): Promise<boolean>`, and
+`onStop()`. Return `true` from `onSend` only after admitting the message; return `false` and set
+`error` on failure so the prompt stays available to retry. `disabled` prevents new submissions.
+Messages have `{ id, role: "user" | "assistant", text, tools? }`. Tools have
+`{ id, name, label, status: "running" | "complete" | "error", output?, data? }`.
+
+Use `renderTool(tool)` for app-specific results and approval controls; return `undefined` for the
+default collapsible trace. The host is responsible for validating tool data and enforcing approvals
+on the server. Rendering an approval button is not an authorization boundary.
+
+The component never imports pi, reads files, stores credentials, or chooses tools. Connect any
+runtime through these props. `../gaming` is the first integration: its development server hosts
+pi-durable, while its app owns game research and draft application. Import `shadcn/tailwind.css`
+from your app's global stylesheet for the upstream chat utilities.
 
 ## Develop
 
