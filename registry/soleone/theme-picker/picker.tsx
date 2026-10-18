@@ -23,6 +23,7 @@ import {
   type MouseEvent,
   type PointerEvent,
   type RefObject,
+  type ReactElement,
   type WheelEvent,
 } from "react"
 import { Button } from "@/components/ui/button"
@@ -106,13 +107,32 @@ const stretch = (value: number, count: number) => {
   return edge + (value - edge) * RUBBER
 }
 
-/** `tagline` is the sample line every card shows; it defaults to the portfolio's. */
-export function ThemePicker({ tagline }: { tagline?: ThemeTagline } = {}) {
+type ThemePickerProps = {
+  /** Sample line on every card; defaults to the portfolio's. */
+  tagline?: ThemeTagline
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  /** Replace the default palette button, or omit it when the host owns the entry points. */
+  trigger?: ReactElement | null
+  /** Set false when the host owns keyboard shortcuts. Defaults to plain T. */
+  shortcut?: boolean
+  finalFocus?: Dialog.Popup.Props["finalFocus"]
+}
+
+export function ThemePicker({
+  tagline,
+  open: controlledOpen,
+  onOpenChange: onHostOpenChange,
+  trigger,
+  shortcut = true,
+  finalFocus,
+}: ThemePickerProps = {}) {
   const { theme, themes: all, setTheme } = useTheme()
   // A hidden theme joins the ring only while it is the one in use.
   const themes = all.filter((candidate) => !candidate.hidden || candidate.name === theme)
   const reduced = useReducedMotion() ?? false
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
   const [front, setFront] = useState(0)
   const [fit, setFit] = useState(1)
   // Set on a confirmed choice: the picker vanishes at once, so the reveal shows only the page. The ring
@@ -167,9 +187,9 @@ export function ThemePicker({ tagline }: { tagline?: ThemeTagline } = {}) {
     })
   }
 
-  // T opens the picker from anywhere, like D flips dark and light, unless the visitor is typing.
+  // Hosts with their own keymap can disable the default T shortcut.
   const openFromKey = useEffectEvent((event: globalThis.KeyboardEvent) => {
-    if (open || event.defaultPrevented || event.repeat) return
+    if (!shortcut || open || event.defaultPrevented || event.repeat) return
     if (event.metaKey || event.ctrlKey || event.altKey || event.key.toLowerCase() !== "t") return
     if (isInteractiveTarget(event.target)) return
     event.preventDefault()
@@ -219,45 +239,51 @@ export function ThemePicker({ tagline }: { tagline?: ThemeTagline } = {}) {
   const onOpenChange = (next: boolean, details?: Dialog.Root.ChangeEventDetails) => {
     // Esc while filtering clears the filter instead of leaving.
     if (!next && details?.reason === "escape-key" && query) return filter("")
-    if (next) {
-      // Opens on the current theme, ready to turn straight away.
-      setQuery("")
-      setRevealing(false)
-      setFit(fitToWindow())
-      const start = Math.max(
-        0,
-        themes.findIndex((candidate) => candidate.name === theme),
-      )
-      position.jump(start)
-      setFront(start)
-      target.current = start
-      reach.jump(OPEN_REACH[0])
-      const widen = (step: number) =>
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => {
-            reach.jump(OPEN_REACH[step])
-            if (step < OPEN_REACH.length - 1) widen(step + 1)
-          }),
-        )
-      widen(1)
-      if (!reduced) {
-        appear.jump(0.4)
-        animate(appear, 1, appearSpring)
-      }
-    }
-    setOpen(next)
+    if (controlledOpen === undefined) setInternalOpen(next)
+    onHostOpenChange?.(next)
   }
+
+  const prepareOpen = useEffectEvent(() => {
+    // Opens on the current theme, ready to turn straight away.
+    setQuery("")
+    setRevealing(false)
+    setFit(fitToWindow())
+    const start = Math.max(
+      0,
+      themes.findIndex((candidate) => candidate.name === theme),
+    )
+    position.jump(start)
+    setFront(start)
+    target.current = start
+    reach.jump(OPEN_REACH[0])
+    const widen = (step: number) =>
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          reach.jump(OPEN_REACH[step])
+          if (step < OPEN_REACH.length - 1) widen(step + 1)
+        }),
+      )
+    widen(1)
+    if (!reduced) {
+      appear.jump(0.4)
+      animate(appear, 1, appearSpring)
+    }
+  })
+
+  useEffect(() => {
+    if (open) prepareOpen()
+  }, [open])
 
   // The page keeps its theme while the visitor browses; only a confirmed choice changes it.
   const commit = (chosen: ThemeOption | undefined) => {
-    if (!chosen || chosen.name === theme) return setOpen(false)
+    if (!chosen || chosen.name === theme) return onOpenChange(false)
     const card = document.getElementById(`theme-card-${chosen.name}`)?.getBoundingClientRect()
     const origin = card && { x: card.left + card.width / 2, y: card.top + card.height / 2 }
     revealTheme(
       () => {
         setTheme(chosen.name)
         setRevealing(true)
-        setOpen(false)
+        onOpenChange(false)
       },
       origin,
       reduced,
@@ -451,24 +477,26 @@ export function ThemePicker({ tagline }: { tagline?: ThemeTagline } = {}) {
       // A chosen theme's reveal hid the cards; they come back, still hidden, for the next open.
       onOpenChangeComplete={(isOpen) => !isOpen && setRevealing(false)}
     >
-      <Dialog.Trigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Choose a theme"
-            aria-keyshortcuts="t"
-            title="Theme (T)"
-            // No focus ring, ever: focus comes back here each time the picker closes, and a ring
-            // flashing around the icon reads as a glitch. Keyboard focus still shows as a hover fill.
-            // oxlint-disable-next-line shadcn/no-restyle
-            className="relative outline-none focus-visible:border-transparent focus-visible:bg-muted focus-visible:ring-0"
-          >
-            <Palette />
-            <span className="absolute right-1.5 bottom-1.5 size-2 rounded-full bg-primary ring-2 ring-background" />
-          </Button>
-        }
-      />
+      {trigger !== null && (
+        <Dialog.Trigger
+          render={trigger ?? (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Choose a theme"
+              aria-keyshortcuts={shortcut ? "t" : undefined}
+              title={shortcut ? "Theme (T)" : "Theme"}
+              // No focus ring, ever: focus comes back here each time the picker closes, and a ring
+              // flashing around the icon reads as a glitch. Keyboard focus still shows as a hover fill.
+              // oxlint-disable-next-line shadcn/no-restyle
+              className="relative outline-none focus-visible:border-transparent focus-visible:bg-muted focus-visible:ring-0"
+            >
+              <Palette />
+              <span className="absolute right-1.5 bottom-1.5 size-2 rounded-full bg-primary ring-2 ring-background" />
+            </Button>
+          )}
+        />
+      )}
       <Dialog.Portal keepMounted={warm}>
         <Dialog.Backdrop
           className={cn(
@@ -478,6 +506,7 @@ export function ThemePicker({ tagline }: { tagline?: ThemeTagline } = {}) {
         />
         <Dialog.Popup
           initialFocus={stage}
+          finalFocus={finalFocus}
           onKeyDown={onKeyDown}
           onPointerDown={onPointerDown}
           onWheel={onWheel}

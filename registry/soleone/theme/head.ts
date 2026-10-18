@@ -87,7 +87,7 @@ export function createThemeHead({ themes, defaultTheme, storageKey }: ThemeHeadC
   const modes = Object.fromEntries(records.map(({ name, mode }) => [name, mode]));
 
   /** Runs in <head> before paint. Mirrors `setTheme` in provider.tsx. */
-  const themeScript = `(function(){try{var m=${JSON.stringify(modes)},r=document.documentElement,t=localStorage.getItem(${JSON.stringify(storageKey)});if(!Object.hasOwn(m,t))t=${JSON.stringify(defaultTheme)};r.dataset.theme=t;r.classList.toggle("dark",m[t]==="dark"||(m[t]==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))}catch(e){}})()`;
+  const themeScript = `(function(){var m=${JSON.stringify(modes)},r=document.documentElement,t=${JSON.stringify(defaultTheme)};try{var s=localStorage.getItem(${JSON.stringify(storageKey)});if(Object.hasOwn(m,s))t=s}catch(e){}r.dataset.theme=t;r.classList.toggle("dark",m[t]==="dark"||(m[t]==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))})()`;
 
   return { themeOptions, themeStyles, themeScript, defaultThemeIsDark };
 }

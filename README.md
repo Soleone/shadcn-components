@@ -39,11 +39,22 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 |---|---|---|
 | `agent` | collapsible right agent dock, controlled conversation, Markdown, tool traces, custom results; no runtime or app knowledge | shadcn sidebar and chat primitives |
 | `material` | grain, glare and rim light (`Sheen`), shadow and type tokens | |
-| `theme` | omarchy palettes on shadcn tokens: parser, built-in palettes, `createThemeHead`, `ThemeProvider` (D flips dark/light), `revealTheme` | |
+| `theme` | omarchy palettes on shadcn tokens: parser, built-in palettes, `createThemeHead`, `ThemeProvider`, `revealTheme` | |
 | `theme-vite` | `themePlugin`: inlines the theme head into `index.html` for Vite apps and serves `virtual:theme-options` | `theme` |
 | `theme-picker` | `ThemePicker`: a 3D ring of cards, each drawn in its own theme | `theme`, `material`, `button`, `kbd` |
 | `flip-card` | `FlipCard`: deals in, tilts, catches the light, flips; any `front` and `back` | `material` |
 | `letter` | `Letter`: a form that folds into a paper plane and flies off when sent | `material` |
+
+## Theme picker in an existing app
+
+`ThemePicker` works uncontrolled by default with its palette button and plain **T** shortcut.
+Hosts can pass `open`, `onOpenChange`, `trigger={null}`, `shortcut={false}` and `finalFocus`
+to keep their existing entry points, keymap and focus return. A custom trigger can be passed as
+an element instead of `null`. Controlled openings reset to the current theme just like the default button.
+
+Use `ThemeProvider` with the same `storageKey` as `themePlugin` (Vite) or `createThemeHead` (server layouts).
+The head restores the choice before paint; unavailable storage falls back to the configured default.
+There is no built-in dark/light toggle shortcut.
 
 ## Agent panel
 
