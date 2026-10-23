@@ -71,11 +71,13 @@ It takes `messages: AgentMessage[]`, controlled `prompt` and `onPromptChange` (a
 `busy`, `onSend(text): Promise<boolean>`, and
 `onStop()`. Return `true` from `onSend` only after admitting the message; return `false` and set
 `error` on failure so the prompt stays available to retry. `disabled` prevents new submissions.
-Messages have `{ id, role: "user" | "assistant", text, tools? }`. Tools have
-`{ id, name, label, status: "running" | "complete" | "error", output?, data? }`.
+Messages have `{ id, role: "user" | "assistant", text, tools? }`; consecutive assistant messages render as one
+turn, with adjacent tool steps grouped in one shadcn `Trace` and text between them splitting the list. Tools have
+`{ id, name, label, status: "running" | "complete" | "error", output?, data? }`. `label` is the step title
+for the current status, worded as Trace expects: "Searching the web", "Searched the web", "Failed to search the web".
 
 Use `renderTool(tool)` for app-specific results and approval controls; return `undefined` for the
-default collapsible trace. The host is responsible for validating tool data and enforcing approvals
+default trace step. The host is responsible for validating tool data and enforcing approvals
 on the server. Rendering an approval button is not an authorization boundary.
 
 The component never imports pi, reads files, stores credentials, or chooses tools. Connect any

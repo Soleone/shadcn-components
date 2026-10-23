@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useState, type Dispatch, type SetStateAction, type ReactNode } from "react"
+import { memo, useId, useState, type Dispatch, type SetStateAction, type ReactNode } from "react"
 import ReactMarkdown from "react-markdown"
 import { ArrowUp, Square, Wrench } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -22,6 +22,7 @@ import {
 export type AgentTool = {
   id: string
   name: string
+  /** The step's title for its current status: "Searching the web", "Searched the web", "Failed to search the web". */
   label: string
   status: "running" | "complete" | "error"
   output?: string
@@ -50,26 +51,75 @@ type AgentPanelProps = {
   renderTool?: (tool: AgentTool) => ReactNode
 }
 
-function ToolTrace({ tool }: { tool: AgentTool }) {
+type AgentTurn = { id: string; role: AgentMessage["role"]; messages: AgentMessage[] }
+
+type AgentBlock =
+  | { type: "text"; text: string }
+  | { type: "steps"; tools: AgentTool[] }
+  | { type: "result"; id: string; node: ReactNode }
+
+/** Consecutive assistant messages form one turn, so a research loop reads as one reply. */
+function turnsOf(messages: AgentMessage[]) {
+  const turns: AgentTurn[] = []
+  for (const message of messages) {
+    const last = turns.at(-1)
+    if (message.role === "assistant" && last?.role === "assistant") last.messages.push(message)
+    else turns.push({ id: message.id, role: message.role, messages: [message] })
+  }
+  return turns
+}
+
+/** Adjacent steps share one Trace; text or a custom result between them starts a new one. */
+function blocksOf(messages: AgentMessage[], renderTool?: (tool: AgentTool) => ReactNode) {
+  const blocks: AgentBlock[] = []
+  for (const message of messages) {
+    if (message.text) blocks.push({ type: "text", text: message.text })
+    for (const tool of message.tools ?? []) {
+      const node = renderTool?.(tool)
+      const last = blocks.at(-1)
+      if (node != null) blocks.push({ type: "result", id: tool.id, node })
+      else if (last?.type === "steps") last.tools.push(tool)
+      else blocks.push({ type: "steps", tools: [tool] })
+    }
+  }
+  return blocks
+}
+
+function ToolStep({ tool }: { tool: AgentTool }) {
   const line = (
     <TraceLine status={tool.status === "complete" ? undefined : tool.status}>
       <TraceIcon><Wrench /></TraceIcon>
-      <TraceTitle>{tool.status === "error" ? `${tool.label} failed` : tool.label}</TraceTitle>
+      <TraceTitle>{tool.label}</TraceTitle>
     </TraceLine>
   )
+  if (!tool.output) return line
   return (
-    <Trace>
-      {tool.output ? (
-        <TraceCollapsible>
-          <TraceCollapsibleTrigger>{line}</TraceCollapsibleTrigger>
-          <TraceCollapsibleContent>
-            <pre className="max-h-48 overflow-auto whitespace-pre-wrap text-xs">{tool.output}</pre>
-          </TraceCollapsibleContent>
-        </TraceCollapsible>
-      ) : line}
-    </Trace>
+    <TraceCollapsible>
+      <TraceCollapsibleTrigger>{line}</TraceCollapsibleTrigger>
+      <TraceCollapsibleContent>
+        <pre className="max-h-48 overflow-auto whitespace-pre-wrap text-xs">{tool.output}</pre>
+      </TraceCollapsibleContent>
+    </TraceCollapsible>
   )
 }
+
+/** Memoized: typing in the composer or host state changes would otherwise re-parse every reply. */
+const AssistantText = memo(function AssistantText({ text }: { text: string }) {
+  return (
+    <div className="flex min-w-0 flex-col gap-2 text-sm leading-relaxed wrap-break-word">
+      <ReactMarkdown
+        skipHtml
+        allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "code", "pre", "br", "blockquote"]}
+        components={{
+          a: ({ children, href }) => <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">{children}</a>,
+          ul: ({ children }) => <ul className="list-disc pl-5">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal pl-5">{children}</ol>,
+          pre: ({ children }) => <pre className="overflow-auto whitespace-pre-wrap">{children}</pre>,
+        }}
+      >{text}</ReactMarkdown>
+    </div>
+  )
+})
 
 /** Controlled UI only. The host owns transport, credentials, tools, and approval policy. */
 export function AgentPanel({
@@ -114,35 +164,24 @@ export function AgentPanel({
                       </EmptyHeader>
                     </Empty>
                   </MessageScrollerItem>
-                ) : messages.map((message) => (
-                  <MessageScrollerItem key={message.id} messageId={message.id} scrollAnchor={message.role === "user"}>
-                    <Message align={message.role === "user" ? "end" : "start"}>
+                ) : turnsOf(messages).map((turn) => (
+                  <MessageScrollerItem key={turn.id} messageId={turn.id} scrollAnchor={turn.role === "user"}>
+                    <Message align={turn.role === "user" ? "end" : "start"}>
                       <MessageContent>
-                        {message.role === "user" ? (
+                        {turn.role === "user" ? (
                           <Bubble align="end" variant="muted">
-                            <BubbleContent>{message.text}</BubbleContent>
+                            <BubbleContent>{turn.messages[0].text}</BubbleContent>
                           </Bubble>
                         ) : (
                           <div className="flex min-w-0 flex-col gap-3">
-                            {message.text && (
-                              <div className="flex min-w-0 flex-col gap-2 text-sm leading-relaxed wrap-break-word">
-                                <ReactMarkdown
-                                  skipHtml
-                                  allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "code", "pre", "br", "blockquote"]}
-                                  components={{
-                                    a: ({ children, href }) => <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">{children}</a>,
-                                    ul: ({ children }) => <ul className="list-disc pl-5">{children}</ul>,
-                                    ol: ({ children }) => <ol className="list-decimal pl-5">{children}</ol>,
-                                    pre: ({ children }) => <pre className="overflow-auto whitespace-pre-wrap">{children}</pre>,
-                                  }}
-                                >{message.text}</ReactMarkdown>
-                              </div>
+                            {blocksOf(turn.messages, renderTool).map((block, index) =>
+                              block.type === "text" ? <AssistantText key={index} text={block.text} />
+                              : block.type === "steps" ? (
+                                <Trace key={block.tools[0].id}>
+                                  {block.tools.map((tool) => <ToolStep key={tool.id} tool={tool} />)}
+                                </Trace>
+                              ) : <div key={block.id} className="min-w-0">{block.node}</div>
                             )}
-                            {message.tools?.map((tool) => (
-                              <div key={tool.id} className="min-w-0">
-                                {renderTool?.(tool) ?? <ToolTrace tool={tool} />}
-                              </div>
-                            ))}
                           </div>
                         )}
                       </MessageContent>
