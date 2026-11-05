@@ -9,7 +9,7 @@
       "title": "Agent panel",
       "description": "A controlled agent conversation with streaming-friendly scrolling, Markdown, tool traces, and custom tool results. The host owns transport, tools, and approvals.",
       "dependencies": ["lucide-react", "react-markdown"],
-      "registryDependencies": ["message-scroller", "message", "bubble", "input-group", "trace", "alert", "empty", "sidebar"],
+      "registryDependencies": ["message-scroller", "message", "bubble", "input-group", "trace", "alert", "empty", "sidebar", "badge"],
       "files": [
         {
           "path": "registry/soleone/agent/index.ts",
