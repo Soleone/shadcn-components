@@ -71,7 +71,9 @@ It takes `messages: AgentMessage[]`, controlled `prompt` and `onPromptChange` (a
 `busy`, `onSend(text): Promise<boolean>`, and
 `onStop()`. Return `true` from `onSend` only after admitting the message; return `false` and set
 `error` on failure so the prompt stays available to retry. `disabled` prevents new submissions.
-Messages have `{ id, role: "user" | "assistant", text, tools? }`; consecutive assistant messages render as one
+Messages have `{ id, role: "user" | "assistant", text, quote?, tools? }`. A user message's `quote`,
+`{ text, source, href? }`, is the text it is about, like a selection: it shows above the message as a Trace
+step titled with `source`, open at first. Consecutive assistant messages render as one
 turn, with adjacent tool steps grouped in one shadcn `Trace` and text between them splitting the list. Tools have
 `{ id, name, label, status: "running" | "complete" | "error", output?, data? }`. `label` is the step title
 for the current status, worded as Trace expects: "Searching the web", "Searched the web", "Failed to search the web".
