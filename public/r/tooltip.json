@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "title": "Tooltip",
+  "description": "The stock shadcn tooltip parts, except that every open tooltip closes when the window loses focus or the tab is hidden, so none lingers after switching to another tab or app.",
+  "registryDependencies": [
+    "tooltip"
+  ],
+  "files": [
+    {
+      "path": "registry/soleone/tooltip/tooltip.tsx",
+      "content": "\"use client\"\n\nimport { Tooltip as TooltipPrimitive } from \"@base-ui/react/tooltip\"\nimport { type ComponentProps, useEffect, useState } from \"react\"\nimport {\n  Tooltip as StockTooltip,\n  TooltipContent,\n  TooltipProvider as StockTooltipProvider,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\"\n\nexport { TooltipContent, TooltipTrigger }\n\nconst mountedTooltips = new Set<TooltipPrimitive.Handle<unknown>>()\n\nfunction closeOpenTooltips() {\n  for (const tooltip of mountedTooltips) if (tooltip.isOpen) tooltip.close()\n}\n\n/**\n * Stock TooltipProvider that closes every open tooltip when the window loses focus or is hidden:\n * leaving for another tab or app never sends the trigger a mouseleave, so a hover tooltip would\n * stay up until the pointer came back to it.\n */\nexport function TooltipProvider(props: ComponentProps<typeof StockTooltipProvider>) {\n  useEffect(() => {\n    function closeWhenHidden() {\n      if (document.hidden) closeOpenTooltips()\n    }\n    window.addEventListener(\"blur\", closeOpenTooltips)\n    document.addEventListener(\"visibilitychange\", closeWhenHidden)\n    return () => {\n      window.removeEventListener(\"blur\", closeOpenTooltips)\n      document.removeEventListener(\"visibilitychange\", closeWhenHidden)\n    }\n  }, [])\n  return <StockTooltipProvider {...props} />\n}\n\n/** Stock Tooltip that the provider can close when the window loses focus. */\nexport function Tooltip(props: Omit<ComponentProps<typeof StockTooltip>, \"handle\">) {\n  const [handle] = useState(TooltipPrimitive.createHandle)\n  useEffect(() => {\n    mountedTooltips.add(handle)\n    return () => {\n      mountedTooltips.delete(handle)\n    }\n  }, [handle])\n  return <StockTooltip handle={handle} {...props} />\n}\n",
+      "type": "registry:component",
+      "target": "components/soleone/tooltip/tooltip.tsx"
+    }
+  ],
+  "type": "registry:component"
+}

@@ -221,6 +221,20 @@
           "target": "components/soleone/letter/letter.css"
         }
       ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:component",
+      "title": "Tooltip",
+      "description": "The stock shadcn tooltip parts, except that every open tooltip closes when the window loses focus or the tab is hidden, so none lingers after switching to another tab or app.",
+      "registryDependencies": ["tooltip"],
+      "files": [
+        {
+          "path": "registry/soleone/tooltip/tooltip.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/tooltip/tooltip.tsx"
+        }
+      ]
     }
   ]
 }

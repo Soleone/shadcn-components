@@ -44,6 +44,7 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 | `theme-picker` | `ThemePicker`: a 3D ring of cards, each drawn in its own theme | `theme`, `material`, `button`, `kbd` |
 | `flip-card` | `FlipCard`: deals in, tilts, catches the light, flips; any `front` and `back` | `material` |
 | `letter` | `Letter`: a form that folds into a paper plane and flies off when sent | `material` |
+| `tooltip` | stock tooltip parts whose `TooltipProvider` closes every open tooltip when the window loses focus or the tab is hidden; import all four parts from here instead of `ui/tooltip` | shadcn `tooltip` |
 
 ## Theme picker in an existing app
 
