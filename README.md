@@ -53,6 +53,10 @@ Hosts can pass `open`, `onOpenChange`, `trigger={null}`, `shortcut={false}` and 
 to keep their existing entry points, keymap and focus return. A custom trigger can be passed as
 an element instead of `null`. Controlled openings reset to the current theme just like the default button.
 
+A star on each card, or **!** on the front one, marks a theme as a favorite; **@** or the star button
+beside Close narrows the ring to favorites. Rebind the keys with `favoriteKey` and `favoritesOnlyKey`
+(`KeyboardEvent.key` values). `ThemeProvider` remembers favorites in localStorage under `<storageKey>.favorites`.
+
 Use `ThemeProvider` with the same `storageKey` as `themePlugin` (Vite) or `createThemeHead` (server layouts).
 The head restores the choice before paint; unavailable storage falls back to the configured default.
 There is no built-in dark/light toggle shortcut.
