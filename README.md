@@ -45,6 +45,7 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 | `flip-card` | `FlipCard`: deals in, tilts, catches the light, flips; any `front` and `back` | `material` |
 | `letter` | `Letter`: a form that folds into a paper plane and flies off when sent | `material` |
 | `tooltip` | stock tooltip parts whose `TooltipProvider` closes every open tooltip when the window loses focus or the tab is hidden; import all four parts from here instead of `ui/tooltip` | shadcn `tooltip` |
+| `markdown-textarea` | `MarkdownTextarea`: a plain textarea with its basic Markdown styled as you type, every character kept; Enter continues lists, checklist boxes click. `MarkdownText`: the same Markdown read-only, boxes clickable with `onChange`, links only with `onOpenLink`. `className` sets the field's box and type | |
 
 ## Theme picker in an existing app
 

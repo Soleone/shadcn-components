@@ -235,6 +235,25 @@
           "target": "components/soleone/tooltip/tooltip.tsx"
         }
       ]
+    },
+    {
+      "name": "markdown-textarea",
+      "type": "registry:component",
+      "title": "Markdown Textarea",
+      "description": "A plain textarea whose basic Markdown (lists, GitHub checklists, bold, italic, links) is styled as you type with every character kept, so caret, undo and phone keyboards stay native. Enter continues a list and checklist boxes are clickable. MarkdownText shows the same Markdown read-only, with clickable boxes.",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/soleone/markdown-textarea/index.ts",
+          "type": "registry:component",
+          "target": "components/soleone/markdown-textarea/index.ts"
+        },
+        {
+          "path": "registry/soleone/markdown-textarea/markdown-textarea.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/markdown-textarea/markdown-textarea.tsx"
+        }
+      ]
     }
   ]
 }
