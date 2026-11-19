@@ -41,7 +41,7 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 | `material` | grain, glare and rim light (`Sheen`), shadow and type tokens | |
 | `theme` | omarchy palettes on shadcn tokens: parser, built-in palettes, `createThemeHead`, `ThemeProvider`, `revealTheme` | |
 | `theme-vite` | `themePlugin`: inlines the theme head into `index.html` for Vite apps and serves `virtual:theme-options` | `theme` |
-| `theme-picker` | `ThemePicker`: a 3D ring of cards, each drawn in its own theme | `theme`, `material`, `button`, `kbd` |
+| `theme-picker` | `ThemePicker`: a 3D ring of cards, each drawn in its own theme; its buttons have tooltips, so wrap the app in `TooltipProvider` | `theme`, `material`, `tooltip`, `button`, `kbd` |
 | `flip-card` | `FlipCard`: deals in, tilts, catches the light, flips; any `front` and `back` | `material` |
 | `letter` | `Letter`: a form that folds into a paper plane and flies off when sent | `material` |
 | `tooltip` | stock tooltip parts whose `TooltipProvider` closes every open tooltip when the window loses focus or the tab is hidden; import all four parts from here instead of `ui/tooltip` | shadcn `tooltip` |

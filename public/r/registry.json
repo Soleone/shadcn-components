@@ -142,7 +142,8 @@
         "button",
         "kbd",
         "@soleone/theme",
-        "@soleone/material"
+        "@soleone/material",
+        "@soleone/tooltip"
       ],
       "files": [
         {
