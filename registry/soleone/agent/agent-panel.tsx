@@ -11,6 +11,7 @@ import {
   InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea,
 } from "@/components/ui/input-group"
 import { Message, MessageContent } from "@/components/ui/message"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/soleone/tooltip/tooltip"
 import {
   MessageScroller, MessageScrollerButton, MessageScrollerContent,
   MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport,
@@ -128,13 +129,20 @@ function Sources({ sources }: { sources: AgentSource[] }) {
     <ul aria-label="Sources" className="flex flex-wrap gap-1 pl-6">
       {[...sites].slice(0, shownSites).map(([host, source]) => (
         <li key={host}>
-          <Badge
-            variant="outline"
-            render={<a href={source.url} target="_blank" rel="noopener noreferrer" title={source.title ?? source.url} />}
-          >
-            <SiteIcon host={host} />
-            {host.replace(/^www\./, "")}
-          </Badge>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Badge
+                  variant="outline"
+                  render={<a href={source.url} target="_blank" rel="noopener noreferrer" />}
+                />
+              }
+            >
+              <SiteIcon host={host} />
+              {host.replace(/^www\./, "")}
+            </TooltipTrigger>
+            <TooltipContent className="wrap-anywhere">{source.title ?? source.url}</TooltipContent>
+          </Tooltip>
         </li>
       ))}
       {hidden > 0 && <li><Badge variant="secondary">+{hidden}</Badge></li>}
@@ -327,9 +335,12 @@ export function AgentPanel({
           {working ? "Agent working. You can stop it at any time." : "Enter to send. Shift+Enter for a new line."}
         </p>
         {model && (
-          <Badge variant="secondary" title={`Model ${model.name}, thinking ${model.thinking}`}>
-            <Brain />{model.name} · {model.thinking}
-          </Badge>
+          <Tooltip>
+            <TooltipTrigger render={<Badge variant="secondary" />}>
+              <Brain />{model.name} · {model.thinking}
+            </TooltipTrigger>
+            <TooltipContent>Model {model.name}, thinking {model.thinking}</TooltipContent>
+          </Tooltip>
         )}
       </div>
     </section>
