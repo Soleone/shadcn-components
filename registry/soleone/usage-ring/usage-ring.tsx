@@ -42,7 +42,7 @@ export function UsageRing({
       <TooltipTrigger
         render={<span tabIndex={0} />}
         aria-label={`${name}: ${fiveHour.left}% of 5 hours and ${sevenDay.left}% of 7 days left`}
-        className={cn("inline-flex rounded-full", className)}
+        className={cn("inline-flex cursor-default select-none rounded-full", className)}
       >
         <svg width={28} height={28} viewBox="0 0 36 36" aria-hidden>
           <circle cx={18} cy={18} r={15.6} fill="none" stroke="var(--border)" strokeWidth={3} />
