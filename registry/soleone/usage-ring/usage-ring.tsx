@@ -4,8 +4,8 @@ import { cn } from "cn"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/soleone/tooltip/tooltip"
 import { ClaudeLogo, OpenAILogo } from "./logos"
 
-/** A usage window: the percent of it left, and when it resets in epoch ms. */
-export type UsageWindow = { left: number; resets: number }
+/** A usage window: the percent of it left, and when it resets in epoch ms; no reset before its first use. */
+export type UsageWindow = { left: number; resets?: number }
 
 export type UsageProvider = "claude" | "openai"
 
@@ -89,11 +89,6 @@ export function UsageRing({
 }
 
 function Row({ label, window, withDay }: { label: string; window: UsageWindow; withDay?: boolean }) {
-  const time = new Date(window.resets).toLocaleString(undefined, {
-    ...(withDay && { weekday: "short" }),
-    hour: "numeric",
-    minute: "2-digit",
-  })
   return (
     <>
       <span className="opacity-70">{label}</span>
@@ -101,10 +96,20 @@ function Row({ label, window, withDay }: { label: string; window: UsageWindow; w
         {window.left <= 0 ? "empty" : `${Math.round(window.left)}% left`}
       </span>
       <span className="opacity-70">
-        resets {time} · in {until(window.resets)}
+        {window.resets === undefined
+          ? "starts on first use"
+          : `resets ${clock(window.resets, withDay)} · in ${until(window.resets)}`}
       </span>
     </>
   )
+}
+
+function clock(at: number, withDay?: boolean) {
+  return new Date(at).toLocaleString(undefined, {
+    ...(withDay && { weekday: "short" }),
+    hour: "numeric",
+    minute: "2-digit",
+  })
 }
 
 function until(at: number) {
