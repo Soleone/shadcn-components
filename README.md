@@ -46,6 +46,7 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 | `letter` | `Letter`: a form that folds into a paper plane and flies off when sent | `material` |
 | `tooltip` | stock tooltip parts whose `TooltipProvider` closes every open tooltip when the window loses focus or the tab is hidden; import all four parts from here instead of `ui/tooltip` | shadcn `tooltip` |
 | `markdown-textarea` | `MarkdownTextarea`: a plain textarea with its basic Markdown styled as you type, every character kept; Enter continues lists, checklist boxes click. `MarkdownText`: the same Markdown read-only, boxes clickable with `onChange`, links only with `onOpenLink`. `className` sets the field's box and type | |
+| `usage-ring` | `UsageRing`: one provider's usage limits as a 28px ring, the outline what's left of 7 days and the number what's left of 5 hours (capped at 99), ink turning `--warning` at 20% and `--destructive` at 0; the tooltip has both resets and the Claude or OpenAI logo. Pass `provider`, `fiveHour` and `sevenDay` as `{ left, resets }` (percent, epoch ms) | `tooltip`; `--warning` from `theme` |
 
 ## Theme picker in an existing app
 

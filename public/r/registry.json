@@ -255,6 +255,25 @@
           "target": "components/soleone/markdown-textarea/markdown-textarea.tsx"
         }
       ]
+    },
+    {
+      "name": "usage-ring",
+      "type": "registry:component",
+      "title": "Usage ring",
+      "description": "One provider's usage limits as a ring: the outline is what's left of the 7-day window, the number what's left of the 5-hour window. Its tooltip has both resets and the provider's logo. Claude and OpenAI.",
+      "registryDependencies": ["@soleone/tooltip"],
+      "files": [
+        {
+          "path": "registry/soleone/usage-ring/usage-ring.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/usage-ring/usage-ring.tsx"
+        },
+        {
+          "path": "registry/soleone/usage-ring/logos.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/usage-ring/logos.tsx"
+        }
+      ]
     }
   ]
 }
