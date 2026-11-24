@@ -1,6 +1,8 @@
 "use client"
 
-export { AgentPanel, type AgentMessage, type AgentSource, type AgentTool } from "./agent-panel"
+export {
+  AgentPanel, type AgentImage, type AgentMessage, type AgentReference, type AgentReferences, type AgentSource, type AgentTool,
+} from "./agent-panel"
 export { AgentModelFields, type AgentModelChoice } from "./agent-model"
 export { AgentSidebar } from "./agent-sidebar"
 export { piStep, piSteps, type PiStep } from "./pi-steps"
