@@ -3,11 +3,12 @@
 import { memo, useId, useState, type ClipboardEvent, type Dispatch, type SetStateAction, type ReactNode } from "react"
 import ReactMarkdown, { defaultUrlTransform } from "react-markdown"
 import remarkGfm from "remark-gfm"
-import { ArrowUp, Brain, Globe, Square, TextQuote, Wrench, X } from "lucide-react"
+import { ArrowUp, Brain, CornerDownLeft, Globe, Layers, LoaderCircle, Square, TextQuote, Wrench, X } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty"
 import {
   InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea,
@@ -97,6 +98,8 @@ type AgentPanelProps = {
   model?: { name: string; thinking: string }
   /** Opens from the model badge, for example AgentModelFields. */
   modelPicker?: ReactNode
+  /** Tokens the session's context holds now, shown in thousands under the composer. */
+  contextTokens?: number
 }
 
 type AgentTurn = { id: string; role: AgentMessage["role"]; messages: AgentMessage[] }
@@ -312,8 +315,10 @@ const AssistantText = memo(function AssistantText({ text, references }: { text: 
 })
 
 /** Controlled UI only. The host owns transport, credentials, tools, and approval policy. */
+const compact = new Intl.NumberFormat("en", { notation: "compact" })
+
 export function AgentPanel({
-  messages, prompt, onPromptChange, busy, disabled = false, error, onSend, onStop, renderTool, model, modelPicker, suggestions,
+  messages, prompt, onPromptChange, busy, disabled = false, error, onSend, onStop, renderTool, model, modelPicker, contextTokens, suggestions,
   acceptImages = false, references,
   placeholder = "Ask the agent…",
   emptyTitle = "What would you like to do?",
@@ -492,25 +497,42 @@ export function AgentPanel({
           </InputGroupAddon>
         </InputGroup>
       </form>
-      <div className="flex min-w-0 items-center justify-between gap-2">
-        <p role="status" className="truncate text-xs text-muted-foreground">
-          {working ? "Agent working. You can stop it at any time." : "Enter to send. Shift+Enter for a new line."}
+      <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+        <p role="status" className="flex shrink-0 items-center gap-1.5">
+          {working ? (
+            <><LoaderCircle className="size-3.5 animate-spin" aria-hidden />Working</>
+          ) : (
+            <>
+              <Kbd aria-label="Enter"><CornerDownLeft /></Kbd>send
+              <Kbd aria-label="Shift Enter" className="ml-1">⇧<CornerDownLeft /></Kbd>line
+            </>
+          )}
         </p>
-        {modelPicker ? (
-          <Popover>
-            <PopoverTrigger render={<Button variant="secondary" size="xs" aria-label="Change model" />}>
-              <Brain data-icon="inline-start" />{model ? `${model.name} · ${model.thinking}` : "Model"}
-            </PopoverTrigger>
-            <PopoverContent side="top" align="end" className="w-80">{modelPicker}</PopoverContent>
-          </Popover>
-        ) : model && (
-          <Tooltip>
-            <TooltipTrigger render={<Badge variant="secondary" />}>
-              <Brain />{model.name} · {model.thinking}
-            </TooltipTrigger>
-            <TooltipContent>Model {model.name}, thinking {model.thinking}</TooltipContent>
-          </Tooltip>
-        )}
+        <div className="ml-auto flex min-w-0 items-center gap-1.5">
+          {contextTokens !== undefined && (
+            <Tooltip>
+              <TooltipTrigger render={<Badge variant="outline" className="shrink-0" />}>
+                <Layers />{compact.format(contextTokens)}
+              </TooltipTrigger>
+              <TooltipContent>Context {contextTokens.toLocaleString()} tokens</TooltipContent>
+            </Tooltip>
+          )}
+          {modelPicker ? (
+            <Popover>
+              <PopoverTrigger render={<Button variant="secondary" size="xs" className="min-w-0" aria-label="Change model" />}>
+                <Brain data-icon="inline-start" /><span className="truncate">{model ? `${model.name} · ${model.thinking}` : "Model"}</span>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="end" className="w-80">{modelPicker}</PopoverContent>
+            </Popover>
+          ) : model && (
+            <Tooltip>
+              <TooltipTrigger render={<Badge variant="secondary" className="min-w-0" />}>
+                <Brain /><span className="truncate">{model.name} · {model.thinking}</span>
+              </TooltipTrigger>
+              <TooltipContent>Model {model.name}, thinking {model.thinking}</TooltipContent>
+            </Tooltip>
+          )}
+        </div>
       </div>
     </section>
   )
