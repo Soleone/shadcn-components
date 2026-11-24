@@ -27,6 +27,8 @@ export type AgentTool = {
   /** The step's title for its current status: "Searching the web", "Searched the web", "Failed to search the web". */
   label: string
   status: "running" | "complete" | "error"
+  /** The full call, like the whole command, shown when the step opens since the title may cut it short. */
+  input?: string
   output?: string
   /** Web pages the step searched or read, shown as site chips under its title. */
   sources?: AgentSource[]
@@ -157,11 +159,16 @@ function ToolStep({ tool }: { tool: AgentTool }) {
       <TraceTitle>{tool.label}</TraceTitle>
     </TraceLine>
   )
-  const step = tool.output ? (
+  const step = tool.input || tool.output ? (
     <TraceCollapsible>
       <TraceCollapsibleTrigger>{line}</TraceCollapsibleTrigger>
-      <TraceCollapsibleContent>
-        <pre className="max-h-48 overflow-auto whitespace-pre-wrap text-xs">{tool.output}</pre>
+      <TraceCollapsibleContent className="flex flex-col gap-2">
+        {tool.input && (
+          <pre className="max-h-48 overflow-auto rounded-md bg-muted px-2 py-1.5 font-mono text-xs whitespace-pre-wrap wrap-anywhere text-foreground">{tool.input}</pre>
+        )}
+        {tool.output && (
+          <pre className="max-h-48 overflow-auto font-mono text-xs whitespace-pre-wrap wrap-anywhere">{tool.output}</pre>
+        )}
       </TraceCollapsibleContent>
     </TraceCollapsible>
   ) : line
