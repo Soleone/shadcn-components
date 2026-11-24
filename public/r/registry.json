@@ -7,9 +7,9 @@
       "name": "agent",
       "type": "registry:component",
       "title": "Agent panel",
-      "description": "A controlled agent conversation with streaming-friendly scrolling, Markdown, tool traces, and custom tool results. The host owns transport, tools, and approvals. Includes Pi tool step titles and a model and thinking picker.",
+      "description": "A controlled agent conversation with streaming-friendly scrolling, Markdown, tool traces, custom tool results, suggestions and a model picker behind its badge. A right dock that widens and shows when a reply runs or waits unread, and a header switcher for earlier sessions. The host owns transport, tools, sessions and approvals. Includes Pi tool step titles and a model and thinking picker.",
       "dependencies": ["lucide-react", "react-markdown"],
-      "registryDependencies": ["message-scroller", "message", "bubble", "input-group", "trace", "alert", "empty", "sidebar", "badge", "field", "select", "@soleone/tooltip"],
+      "registryDependencies": ["message-scroller", "message", "bubble", "input-group", "trace", "alert", "empty", "sidebar", "badge", "field", "select", "popover", "input", "button", "@soleone/tooltip"],
       "files": [
         {
           "path": "registry/soleone/agent/index.ts",
@@ -25,6 +25,11 @@
           "path": "registry/soleone/agent/agent-sidebar.tsx",
           "type": "registry:component",
           "target": "components/soleone/agent/agent-sidebar.tsx"
+        },
+        {
+          "path": "registry/soleone/agent/agent-sessions.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/agent/agent-sessions.tsx"
         },
         {
           "path": "registry/soleone/agent/agent-model.tsx",

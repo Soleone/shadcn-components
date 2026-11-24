@@ -37,7 +37,7 @@ depends on (`button`, `kbd`), answer no when asked to overwrite them.
 
 | item | what | depends on |
 |---|---|---|
-| `agent` | collapsible right agent dock, controlled conversation, Markdown, tool traces, custom results; no runtime or app knowledge | `tooltip`, shadcn sidebar and chat primitives |
+| `agent` | collapsible right agent dock that widens and shows a dot while `busy` or with an unread reply, controlled conversation, Markdown, tool traces, custom results, empty-state `suggestions`, a `modelPicker` behind the model badge, and `AgentSessionSwitcher` for the dock's `header` (searchable earlier sessions, New); no runtime or app knowledge | `tooltip`, shadcn sidebar, popover and chat primitives |
 | `material` | grain, glare and rim light (`Sheen`), shadow and type tokens | |
 | `theme` | omarchy palettes on shadcn tokens: parser, built-in palettes, `createThemeHead`, `ThemeProvider`, `revealTheme` | |
 | `theme-vite` | `themePlugin`: inlines the theme head into `index.html` for Vite apps and serves `virtual:theme-options` | `theme` |
