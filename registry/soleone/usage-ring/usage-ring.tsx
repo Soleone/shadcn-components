@@ -9,10 +9,11 @@ export type UsageWindow = { left: number; resets?: number }
 
 export type UsageProvider = "claude" | "openai"
 
-// Brand colors stay fixed across themes; OpenAI's mark is monochrome, so it takes the theme's ink.
+// Brand colors stay fixed across themes. OpenAI's mark is monochrome, so it takes the surrounding text color:
+// foreground on the page, background inside the inverted tooltip.
 const PROVIDERS = {
   claude: { name: "Claude", color: "#D97757", Logo: ClaudeLogo },
-  openai: { name: "OpenAI", color: "var(--foreground)", Logo: OpenAILogo },
+  openai: { name: "OpenAI", color: "currentColor", Logo: OpenAILogo },
 }
 
 const WARN_AT = 20
