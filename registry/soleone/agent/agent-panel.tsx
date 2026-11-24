@@ -23,6 +23,8 @@ import {
   Trace, TraceCollapsible, TraceCollapsibleContent, TraceCollapsibleTrigger,
   TraceIcon, TraceLine, TraceTitle,
 } from "@/components/ui/trace"
+import { askUser } from "./ask-user"
+import { QuestionCard, questionOf } from "./agent-question"
 
 export type AgentTool = {
   id: string
@@ -32,6 +34,8 @@ export type AgentTool = {
   status: "running" | "complete" | "error"
   /** The full call, like the whole command, shown when the step opens since the title may cut it short. */
   input?: string
+  /** The call's arguments as the model sent them. The panel reads an `ask_user` question from them. */
+  arguments?: Record<string, unknown>
   output?: string
   /** Web pages the step searched or read, shown as site chips under its title. */
   sources?: AgentSource[]
@@ -322,15 +326,15 @@ export function AgentPanel({
   const promptId = useId()
   const working = busy || sending
 
-  async function send() {
-    const text = prompt.trim()
-    if ((!text && images.length === 0) || working || disabled) return
+  // Answers to ask_user send without the composer's draft.
+  async function send(text = prompt.trim(), sent = images) {
+    if ((!text && sent.length === 0) || working || disabled) return
     setSending(true)
     setSubmissionError("")
     try {
-      if (await onSend(text, images)) {
+      if (await onSend(text, sent)) {
         onPromptChange((current) => current.trim() === text ? "" : current)
-        setImages((current) => current.filter((image) => !images.includes(image)))
+        setImages((current) => current.filter((image) => !sent.includes(image)))
       }
     } catch (error) {
       setSubmissionError(error instanceof Error ? error.message : "Could not send. Please try again.")
@@ -346,6 +350,17 @@ export function AgentPanel({
     Promise.all(files.map(readImage)).then(
       (pasted) => setImages((current) => [...current, ...pasted]),
       () => setSubmissionError("Could not read the pasted image."),
+    )
+  }
+
+  const turns = turnsOf(messages)
+  // A question is answered once any message follows its turn.
+  const renderStep = (answered: boolean) => (tool: AgentTool) => {
+    const custom = renderTool?.(tool)
+    if (custom != null) return custom
+    const question = tool.name === askUser.name && tool.status === "complete" ? questionOf(tool.arguments) : undefined
+    return question && (
+      <QuestionCard question={question} locked={answered || working || disabled} onAnswer={(text) => void send(text, [])} />
     )
   }
 
@@ -380,7 +395,7 @@ export function AgentPanel({
                       )}
                     </Empty>
                   </MessageScrollerItem>
-                ) : turnsOf(messages).map((turn) => (
+                ) : turns.map((turn, index) => (
                   <MessageScrollerItem key={turn.id} messageId={turn.id} scrollAnchor={turn.role === "user"}>
                     <Message align={turn.role === "user" ? "end" : "start"}>
                       <MessageContent>
@@ -398,8 +413,8 @@ export function AgentPanel({
                           </div>
                         ) : (
                           <div className="flex min-w-0 flex-col gap-3">
-                            {blocksOf(turn.messages, renderTool).map((block, index) =>
-                              block.type === "text" ? <AssistantText key={index} text={block.text} references={references} />
+                            {blocksOf(turn.messages, renderStep(index < turns.length - 1)).map((block, blockIndex) =>
+                              block.type === "text" ? <AssistantText key={blockIndex} text={block.text} references={references} />
                               : block.type === "steps" ? (
                                 <Trace key={block.tools[0].id}>
                                   {block.tools.map((tool) => <ToolStep key={tool.id} tool={tool} />)}

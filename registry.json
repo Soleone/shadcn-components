@@ -7,9 +7,9 @@
       "name": "agent",
       "type": "registry:component",
       "title": "Agent panel",
-      "description": "A controlled agent conversation with streaming-friendly scrolling, Markdown with tables, links to app items drawn as chips, pasted images, tool traces, custom tool results, suggestions and a model picker behind its badge. A right dock that widens and shows when a reply runs or waits unread, and a header switcher for earlier sessions. The host owns transport, tools, sessions and approvals. Includes Pi tool step titles and a model and thinking picker.",
+      "description": "A controlled agent conversation with streaming-friendly scrolling, Markdown with tables, links to app items drawn as chips, pasted images, tool traces, custom tool results, questions the agent asks with ask_user as one-click answers, suggestions and a model picker behind its badge. A right dock that widens and shows when a reply runs or waits unread, and a header switcher for earlier sessions. The host owns transport, tools, sessions and approvals. Includes Pi tool step titles and a model and thinking picker.",
       "dependencies": ["lucide-react", "react-markdown", "remark-gfm"],
-      "registryDependencies": ["message-scroller", "message", "bubble", "input-group", "trace", "alert", "empty", "sidebar", "badge", "field", "select", "popover", "input", "button", "@soleone/tooltip"],
+      "registryDependencies": ["message-scroller", "message", "bubble", "input-group", "trace", "alert", "empty", "sidebar", "badge", "field", "select", "popover", "input", "checkbox", "dropdown-menu", "button-group", "button", "@soleone/tooltip"],
       "files": [
         {
           "path": "registry/soleone/agent/index.ts",
@@ -40,6 +40,16 @@
           "path": "registry/soleone/agent/pi-steps.ts",
           "type": "registry:component",
           "target": "components/soleone/agent/pi-steps.ts"
+        },
+        {
+          "path": "registry/soleone/agent/agent-question.tsx",
+          "type": "registry:component",
+          "target": "components/soleone/agent/agent-question.tsx"
+        },
+        {
+          "path": "registry/soleone/agent/ask-user.ts",
+          "type": "registry:component",
+          "target": "components/soleone/agent/ask-user.ts"
         }
       ]
     },
