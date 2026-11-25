@@ -270,7 +270,7 @@ function MarkdownTextarea({
     <div
       data-slot="markdown-textarea"
       className={cn(
-        "grid w-full overflow-y-auto rounded-lg border border-input px-2.5 py-2 text-base transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 md:text-sm",
+        "grid w-full overflow-y-auto rounded-lg border border-input px-2.5 py-2 text-base transition-colors md:text-sm",
         className,
       )}
     >
